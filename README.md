@@ -1,20 +1,80 @@
-# AI Time Awareness Skill
+# AI Time Awareness
 
-A small AI agent skill for time-sensitive conversations.
+AI agents frequently make a subtle but dangerous mistake:
 
-It helps prevent two common failures:
+They assume adjacent chat messages happened close together in time.
 
-- Treating adjacent chat messages as if they happened minutes apart, even when the user returned hours or days later.
-- Treating the model's training cutoff as if it were the current date, especially for policy, stocks, politics, economics, news, prices, releases, and other date-sensitive topics.
+This skill teaches agents to anchor reasoning to the user's current date, time, and timezone before answering time-sensitive questions.
 
-## What It Does
+## Problem
 
-When a conversation depends on current time or facts that may have changed, the agent should:
+Long-running AI conversations are not always continuous.
 
-1. Anchor the answer to the user's current date, time, and timezone.
-2. Avoid inferring elapsed time from transcript order alone.
-3. Search fresh authoritative sources for post-cutoff or date-sensitive facts.
-4. Clearly say when current time or live data is unavailable.
+A user may reply two minutes later, two hours later, or two days later. But many agents still behave as if the conversation never paused. That can lead to awkward or incorrect answers:
+
+- Saying "as we discussed earlier today" when the prior message was days ago.
+- Telling the user "it is getting late" without knowing their current local time.
+- Answering stock, policy, politics, economics, or news questions from stale training data.
+- Treating the model's training cutoff as if it were the current date.
+
+For time-sensitive tasks, that small assumption can quietly break the whole answer.
+
+## Solution
+
+AI Time Awareness gives agents a simple rule:
+
+Before answering time-sensitive questions, establish the user's current date, time, and timezone, then verify any post-cutoff or date-sensitive facts with fresh sources.
+
+The current time does not need to be printed in every response. It just needs to be part of the agent's reasoning before it answers.
+
+## Example
+
+Without AI Time Awareness:
+
+```text
+User:
+Should I still buy the dip?
+
+Agent:
+As we discussed earlier today...
+```
+
+The discussion actually happened two days ago.
+
+With AI Time Awareness:
+
+```text
+Agent:
+I need to verify the current price and market context first before answering.
+```
+
+## Features
+
+- Current time anchoring
+- Timezone-aware reasoning
+- Conversation gap detection
+- Relative date resolution
+- Post-cutoff fact verification
+- Fresh-source workflow for date-sensitive topics
+- Clear fallback when current time or live data is unavailable
+
+## Date-Sensitive Topics
+
+Use this skill for questions involving:
+
+- Stocks, crypto, prices, earnings, and markets
+- Policy, law, politics, and elections
+- Economics, macro data, and central banks
+- News, current events, and public figures
+- Product releases, launches, schedules, and availability
+- Anything phrased as current, latest, today, recent, now, tomorrow, or yesterday
+
+## Supported Agents
+
+- Claude Code
+- Codex CLI
+- OpenAI Agents
+- Custom agent frameworks
 
 ## Install
 
@@ -31,12 +91,6 @@ Optional UI metadata is included at:
 ```text
 realtime-context/agents/openai.yaml
 ```
-
-## Example Use Cases
-
-- A user resumes a conversation two days later and asks for advice that depends on the current time.
-- A user asks about current stock prices, market events, policy changes, economic data, or breaking news.
-- A user asks about something that happened after the model's training cutoff.
 
 ## License
 
