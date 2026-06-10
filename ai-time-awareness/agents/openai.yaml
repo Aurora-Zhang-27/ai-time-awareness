@@ -1,0 +1,4 @@
+interface:
+  display_name: "AI Time Awareness"
+  short_description: "Fresh time and source checks"
+  default_prompt: "Use $ai-time-awareness before answering this time-sensitive question."

@@ -78,18 +78,18 @@ Use this skill for questions involving:
 
 ## Install
 
-Copy the `realtime-context` folder into your agent's skills directory.
+Copy the `ai-time-awareness` folder into your agent's skills directory.
 
 For Codex-style skills, the important file is:
 
 ```text
-realtime-context/SKILL.md
+ai-time-awareness/SKILL.md
 ```
 
 Optional UI metadata is included at:
 
 ```text
-realtime-context/agents/openai.yaml
+ai-time-awareness/agents/openai.yaml
 ```
 
 ## License

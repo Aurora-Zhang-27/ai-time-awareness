@@ -1,9 +1,9 @@
 ---
-name: realtime-context
+name: ai-time-awareness
 description: Use when answering time-sensitive conversations involving current time, time zones, elapsed time between messages, current/latest/today/recent facts, stocks, policy, politics, economics, news, releases, events, prices, or any question where stale information could change the answer. The skill makes the agent anchor answers to the user's current time and verify post-cutoff or date-sensitive facts with fresh sources.
 ---
 
-# Realtime Context
+# AI Time Awareness
 
 Use this skill whenever the user's request depends on current time or facts that may have changed.
 
