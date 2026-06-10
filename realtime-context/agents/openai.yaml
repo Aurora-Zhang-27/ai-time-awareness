@@ -1,0 +1,4 @@
+interface:
+  display_name: "Realtime Context"
+  short_description: "Fresh time and source checks"
+  default_prompt: "Use $realtime-context before answering this time-sensitive question."
