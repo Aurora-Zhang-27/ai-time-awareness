@@ -27,6 +27,29 @@ Before answering time-sensitive questions, establish the user's current date, ti
 
 The current time does not need to be printed in every response. It just needs to be part of the agent's reasoning before it answers.
 
+## How It Works
+
+```text
+User message
+    |
+    v
+Check whether the answer is time-sensitive
+    |
+    v
+Anchor current date, time, and timezone
+    |
+    v
+Detect conversation gap and relative-date risk
+    |
+    v
+Verify post-cutoff or changeable facts with fresh sources
+    |
+    v
+Answer with clear separation between fresh facts and analysis
+```
+
+AI Time Awareness is intentionally small. It does not try to replace web search, market data APIs, or source verification. It tells the agent when those things are required.
+
 ## Example
 
 Without AI Time Awareness:
@@ -58,6 +81,43 @@ I need to verify the current price and market context first before answering.
 - Fresh-source workflow for date-sensitive topics
 - Clear fallback when current time or live data is unavailable
 
+## Conversation Gap Heuristic
+
+Agents should not infer elapsed time from message order alone. If your platform tracks message timestamps, use them as a soft signal:
+
+| Gap | Suggested behavior |
+| --- | --- |
+| Short gap, such as under 30 minutes | Preserve normal conversational continuity. |
+| Medium gap, such as 2-24 hours | Avoid assumptions like "earlier today", "tonight", or "good morning" unless current local time is known. |
+| Long gap, such as over 24 hours | Treat previous messages as historical context, not a just-now conversation. Summarize or re-anchor when needed. |
+
+These thresholds are intentionally heuristic. Different products can adjust them based on session length, user expectations, and task risk.
+
+## Time Injection Modes
+
+AI Time Awareness supports two implementation patterns.
+
+### 1. System-Level Injection
+
+The host application adds fresh time metadata to each user turn:
+
+```text
+[Current Time: 2026-06-11 20:08 America/Edmonton]
+[Previous User Message: 2026-06-09 17:42 America/Edmonton]
+```
+
+This is the most reliable option when your agent framework supports dynamic system or developer context.
+
+### 2. Tool-Based Injection
+
+The agent calls a runtime tool only when it needs precise current time:
+
+```text
+get_current_time(timezone="America/Edmonton")
+```
+
+This is useful for lightweight frameworks that cannot inject dynamic metadata on every turn.
+
 ## Date-Sensitive Topics
 
 Use this skill for questions involving:
@@ -75,6 +135,34 @@ Use this skill for questions involving:
 - Codex CLI
 - OpenAI Agents
 - Custom agent frameworks
+
+## Quick Start
+
+Add the skill folder to your agent, then include a current-time anchor in your runtime context.
+
+```text
+You have access to the AI Time Awareness skill.
+
+Current user time:
+2026-06-11 20:08 America/Edmonton
+
+Before answering time-sensitive questions, anchor reasoning to the current user time.
+For post-cutoff or date-sensitive facts, search fresh authoritative sources before answering.
+```
+
+For tool-based agents, expose a current-time tool:
+
+```python
+def get_current_time(timezone: str) -> str:
+    """Return the current date, time, and timezone for the user."""
+    ...
+```
+
+Then instruct the agent:
+
+```text
+If current time is missing or ambiguous, call get_current_time() before answering time-sensitive questions.
+```
 
 ## Install
 

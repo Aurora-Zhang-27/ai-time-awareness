@@ -41,6 +41,21 @@ The current time anchor may be internal context; it does not need to be printed 
 
 Do not infer elapsed time from message order or transcript proximity. If the answer depends on what time it is for the user, establish the user's current time first.
 
+If the platform provides a previous-message timestamp, use elapsed time as a soft signal:
+
+- Short gap: preserve normal conversational continuity.
+- Medium gap: avoid time-of-day assumptions such as "earlier today", "tonight", or "good morning" unless verified.
+- Long gap: treat prior context as historical context, not a just-now conversation.
+
+## Time Source Guardrail
+
+The current time may come from either:
+
+- System context injected by the host application.
+- A runtime tool call such as `get_current_time()`.
+
+Prefer system context when it is fresh and explicit. Use a tool call when the current time is missing, ambiguous, or precision matters.
+
 ## Knowledge Cutoff Guardrail
 
 The model's training cutoff is not current context. If the user asks about facts beyond the cutoff, or the answer could have changed since the cutoff, verify with fresh sources before answering. If verification is unavailable, say so directly:
